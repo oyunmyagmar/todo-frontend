@@ -34,9 +34,9 @@ const Home = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: newTask }),
+    }).then(() => {
+      loadTasks();
     });
-    // loadTasks();
 
     // .then((res) => {})
     // .then((data) => {})
@@ -46,7 +46,7 @@ const Home = () => {
     loadTasks();
   }, []);
   return (
-    <div className="flex justify-center mt-100">
+    <div className="flex justify-center mt-10">
       <div className="card w-96 bg-base-100 card-lg shadow-lg">
         <div className="card-body">
           <h2 className="card-title">To-Do</h2>
@@ -55,7 +55,8 @@ const Home = () => {
               className="input mr-4"
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
-            ></input>
+              onKeyDown={(e) => e.key == "Enter" && createNewTask()}
+            />
             <button onClick={createNewTask} className="btn">
               Add
             </button>
