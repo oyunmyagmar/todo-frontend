@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { BsPlusLg } from "react-icons/bs";
 import { MdDeleteOutline } from "react-icons/md";
+import { SideBar } from "@/components";
 // import { AddedTasks } from "@/components";
 
 const Home = () => {
@@ -70,8 +71,10 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex justify-center mt-10">
-      <div className="card w-120 bg-base-100 card-lg shadow-lg">
+    <div className="flex justify-center">
+      <div className="flex justify-self-start">ddfd</div>
+      {/* <SideBar /> */}
+      <div className="card w-120 bg-base-100 card-lg shadow-lg mt-10">
         <div className="card-body">
           <h2 className="card-title">To-Do</h2>
           <div className="w-full flex">
@@ -138,7 +141,8 @@ const Home = () => {
                 task.isDone ? "block" : "hidden"
               )}`}
             >
-              Completed Tasks {tasks.filter((el) => el.isDone).length}
+              Completed {tasks.filter((el) => el.isDone).length} out of{" "}
+              {tasks.length}
             </button>
             {tasks.map(
               (task) =>
