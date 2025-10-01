@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { BsPlusLg } from "react-icons/bs";
 import { MdDeleteOutline } from "react-icons/md";
+// import { AddedTasks } from "@/components";
 
 const Home = () => {
   const [newTask, setNewTask] = useState("");
@@ -70,11 +71,12 @@ const Home = () => {
 
   return (
     <div className="flex justify-center mt-10">
-      <div className="card w-150 bg-base-100 card-lg shadow-lg">
+      <div className="card w-120 bg-base-100 card-lg shadow-lg">
         <div className="card-body">
           <h2 className="card-title">To-Do</h2>
           <div className="w-full flex">
             <input
+              type="text"
               placeholder="Add a task..."
               className="input mr-4 w-full"
               value={newTask}
@@ -90,23 +92,33 @@ const Home = () => {
             </button>
           </div>
           {tasks.map((task) => (
+            // <AddedTasks
+            //   task={task}
+            //   delete={() => deleteTask(task.id)}
+            //   edit={() => editTask(task)}
+            //   update={() => updateTask(task.id)}
+            // />
             <div
               key={task.id}
-              className="card border border-base-300 p-4 mt-2 flex-row justify-between"
+              className={`card border border-base-300 p-4 mt-2 flex-row justify-between ${
+                task.isDone && "hidden"
+              }`}
             >
-              <div className="flex gap-2 items-center">
+              <div className="w-70 flex gap-2 items-center">
                 <input
                   checked={task.isDone}
                   type="checkbox"
-                  onClick={() => updateTask(task.id)}
+                  onChange={() => updateTask(task.id)}
                 />
-                <div className={`${task.isDone && "line-through"}`}>
+                <div className={`${task.isDone && "line-through"} truncate`}>
                   {task.name}
                 </div>
               </div>
               <div className="flex gap-2 items-center">
                 <button
-                  className="btn btn-ghost btn-square"
+                  className={`btn btn-ghost btn-square ${
+                    task.isDone && "hidden"
+                  }`}
                   onClick={() => editTask(task)}
                 >
                   <CiEdit size={28} />
@@ -121,9 +133,51 @@ const Home = () => {
             </div>
           ))}
           <div>
-            <button className="btn btn-neutral">Completed</button>
-
-            {tasks.map((task) => task.isDone && <div>{task.name}</div>)}
+            <button
+              className={`btn btn-neutral ${tasks.map((task) =>
+                task.isDone ? "block" : "hidden"
+              )}`}
+            >
+              Completed Tasks {tasks.filter((el) => el.isDone).length}
+            </button>
+            {tasks.map(
+              (task) =>
+                task.isDone && (
+                  <div
+                    key={task.id}
+                    className="card border border-base-300 p-4 mt-2 flex-row justify-between"
+                  >
+                    <div className="w-70 flex gap-2 items-center">
+                      <input
+                        checked={task.isDone}
+                        type="checkbox"
+                        onChange={() => updateTask(task.id)}
+                      />
+                      <div
+                        className={`${task.isDone && "line-through"} truncate`}
+                      >
+                        {task.name}
+                      </div>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <button
+                        className={`btn btn-ghost btn-square ${
+                          task.isDone && "hidden"
+                        }`}
+                        onClick={() => editTask(task)}
+                      >
+                        <CiEdit size={28} />
+                      </button>
+                      <button
+                        className="btn btn-error btn-soft btn-square"
+                        onClick={() => deleteTask(task.id)}
+                      >
+                        <MdDeleteOutline size={20} />
+                      </button>
+                    </div>
+                  </div>
+                )
+            )}
           </div>
         </div>
       </div>
