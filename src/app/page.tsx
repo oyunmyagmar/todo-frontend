@@ -66,9 +66,7 @@ const Home = () => {
     loadTasks();
   }
 
-  async function deleteAllCompleted() {
-    const filtered = tasks.filter((el) => el.isDone);
-  }
+  async function deleteAllCompleted() {}
 
   return (
     <div className="w-screen h-full px-10 mt-5 mb-20">
@@ -147,7 +145,8 @@ const Home = () => {
               </div>
             </div>
           ))}
-          <button className="btn mt-2" onClick={deleteAllCompleted}>
+          <p>{tasks.length}</p>
+          <button className="btn mt-2" onClick={() => deleteAllCompleted}>
             Clear All Completed Tasks
           </button>
         </div>
