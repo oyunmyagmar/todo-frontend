@@ -3,19 +3,24 @@ import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { BsPlusLg } from "react-icons/bs";
 import { MdDeleteOutline } from "react-icons/md";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { SideBar } from "@/components";
 
 type Task = { id: string; name: string; isDone: boolean };
+
 const Home = () => {
   const [newTask, setNewTask] = useState("");
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [totalTasks, setTotalTasks] = useState(0);
   const [status, setStatus] = useState("All");
 
   useEffect(() => {
     loadTasks();
   }, [status]);
 
+  const STATUS_LABELS: Record<string, string> = {
+    All: "All Tasks",
+    Active: "Active Tasks",
+    Completed: "Completed Tasks",
+  };
   async function createNewTask() {
     await fetch("http://localhost:3000/tasks", {
       method: "POST",
@@ -28,16 +33,16 @@ const Home = () => {
     setNewTask("");
   }
 
-  function loadTasks() {
-    fetch(`http://localhost:3000/tasks?status=${status}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setTasks(data);
-      });
+  async function loadTasks() {
+    const res = await fetch(`http://localhost:3000/tasks?status=${status}`);
+    const data = await res.json();
+
+    setTasks(data.tasks);
+    setTotalTasks(data.total);
   }
 
   async function deleteTask(id: string) {
-    if (confirm("Are you sure you want to delete this task?")) {
+    if (confirm("Delete this task?")) {
       await fetch(`http://localhost:3000/tasks/${id}`, {
         method: "DELETE",
       });
@@ -66,15 +71,19 @@ const Home = () => {
     loadTasks();
   }
 
-  async function deleteAllCompleted() {}
+  async function deleteAllCompleted() {
+    if (!confirm("Delete all completed tasks?")) return;
+
+    await fetch("http://localhost:3000/tasks/completed", {
+      method: "DELETE",
+    });
+
+    loadTasks();
+  }
 
   return (
-    <div className="w-screen h-full px-10 mt-5 mb-20">
-      <button className="btn">
-        <RxHamburgerMenu />
-      </button>
-
-      <div className="card w-150 bg-base-100 shadow-sm mt-5">
+    <div className="w-screen h-full flex justify-center items-center">
+      <div className="card w-150 bg-gray-400/10 shadow-2xl m-5">
         <div className="card-body">
           <h2 className="card-title">To-Do</h2>
           <div className="w-full flex">
@@ -145,8 +154,15 @@ const Home = () => {
               </div>
             </div>
           ))}
-          <p>{tasks.length}</p>
-          <button className="btn mt-2" onClick={() => deleteAllCompleted}>
+          <p className="flex gap-0.5">
+            <span>{STATUS_LABELS[status]}:</span>
+            <span className="font-semibold">{tasks.length}</span>
+            <span>/{totalTasks}</span>
+          </p>
+          <button
+            className="btn mt-2 cursor-pointer"
+            onClick={deleteAllCompleted}
+          >
             Clear All Completed Tasks
           </button>
         </div>
