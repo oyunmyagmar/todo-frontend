@@ -22,7 +22,7 @@ const Home = () => {
     Completed: "Completed Tasks",
   };
   async function createNewTask() {
-    await fetch("http://localhost:3000/tasks", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,9 @@ const Home = () => {
   }
 
   async function loadTasks() {
-    const res = await fetch(`http://localhost:3000/tasks?status=${status}`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/tasks?status=${status}`
+    );
     const data = await res.json();
 
     setTasks(data.tasks);
@@ -43,7 +45,7 @@ const Home = () => {
 
   async function deleteTask(id: string) {
     if (confirm("Delete this task?")) {
-      await fetch(`http://localhost:3000/tasks/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
         method: "DELETE",
       });
       loadTasks();
@@ -53,7 +55,7 @@ const Home = () => {
   async function editTask(task: Task) {
     const newName = prompt("Edit", task.name);
     if (newName) {
-      await fetch(`http://localhost:3000/tasks/${task.id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${task.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +67,7 @@ const Home = () => {
   }
 
   async function toggleCheckBox(id: string) {
-    await fetch(`http://localhost:3000/tasks/${id}/check`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}/check`, {
       method: "PATCH",
     });
     loadTasks();
@@ -73,8 +75,7 @@ const Home = () => {
 
   async function deleteAllCompleted() {
     if (!confirm("Delete all completed tasks?")) return;
-
-    await fetch("http://localhost:3000/tasks/completed", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/completed`, {
       method: "DELETE",
     });
 
